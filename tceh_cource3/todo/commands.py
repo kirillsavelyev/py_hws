@@ -11,7 +11,7 @@ from custom_exceptions import UserExitException
 from models import BaseItem
 from utils import get_input_function
 
-__author__ = 'sobolevn'
+__author__ = 'sobolevn, kirillsavelyev'
 
 
 class BaseCommand(object):
@@ -57,11 +57,12 @@ class NewCommand(BaseCommand):
         # )
         # return dict(classes)
 
-        from models import ToDoItem, ToBuyItem
+        from models import ToDoItem, ToBuyItem, ToReadItem
 
         return {
             'ToDoItem': ToDoItem,
             'ToBuyItem': ToBuyItem,
+            'ToReadItem': ToReadItem,
         }
 
     def perform(self, objects, *args, **kwargs):
@@ -77,11 +78,14 @@ class NewCommand(BaseCommand):
         while True:
             try:
                 selection = int(input_function('Input number: '))
+                selected_key = list(classes.keys())[selection]
                 break
             except ValueError:
                 print('Bad input, try again.')
+            except IndexError:
+                print('Index out of range.')
 
-        selected_key = list(classes.keys())[selection]
+        # selected_key = list(classes.keys())[selection]
         selected_class = classes[selected_key]
         print('Selected: {}'.format(selected_class.__name__))
         print()
@@ -115,10 +119,14 @@ class DoneCommand(BaseCommand):
         input_function = get_input_function()
 
         try:
+            ListCommand().perform(objects)
             index = input_function('Input index to %s: ' %
                                    self.__class__.message)
-            objects[int(index)].done = self.__class__.status_to_set
-            print('%sed!' % self.__class__.message)
+            if objects[int(index)].done:
+                print('This deal already %sed!' % self.__class__.message)
+            else:
+                objects[int(index)].done = self.__class__.status_to_set
+                print('%sed!' % self.__class__.message)
         except ValueError:
             print('Bad value!')
         except IndexError:
