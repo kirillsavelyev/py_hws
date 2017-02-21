@@ -29,7 +29,7 @@ class ListCommand(BaseCommand):
         return 'list'
 
     def perform(self, objects, *args, **kwargs):
-        if len(objects) == 0:
+        if not objects:
             print('There are no items in storage.')
             return
 
