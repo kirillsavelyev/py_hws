@@ -1,0 +1,91 @@
+sqlite> create table products (
+   ...> id integer primary key autoincrement not null,
+   ...> name varchar(25) not null,
+   ...> price integer);
+sqlite> insert into products (name, price)
+   ...> values ('prod2', 15);
+
+sqlite> create table orders (
+   ...> id integer not null primary key autoincrement,
+   ...> quantity integer,
+   ...> email varchar(35),
+   ...> product_id integer not null,
+   ...> constraint orders_products_fk foreign key (product_id)
+   ...> references products (id) match simple
+   ...> );
+sqlite> insert into orders (quantity, email, product_id)
+   ...> values (12, 'test@test.ru', 2);
+
+sqlite> create table in_stock (
+   ...> id integer not null primary key autoincrement,
+   ...> quantity integer,
+   ...> product_id integer not null,
+   ...> constraint orders_products_fk foreign key (product_id)
+   ...> references products (id) match simple
+   ...> );
+sqlite> insert into in_stock(
+   ...> quantity, product_id)
+   ...> values (
+   ...> 31, 3);
+
+sqlite> select * from products;
+1|test|10
+2|prod2|15
+3|prod3|20
+4|prod4|30
+sqlite> select * from products left outer join orders on (
+   ...> products.id=orders.product_id
+   ...> );
+1|test|10|2|2|user1@u.ru|1
+1|test|10|1|12|test@test.test|1
+1|test|10|6|14|user5@u.ru|1
+2|prod2|15|3|1|user2@u.ru|2
+2|prod2|15|7|1|user6@u.ru|2
+2|prod2|15|10|9|user8@u.ru|2
+3|prod3|20|4|5|user3@u.ru|3
+3|prod3|20|8|6|user7@u.ru|3
+4|prod4|30|5|4|user4@u.ru|4
+4|prod4|30|9|7|user8@u.ru|4
+4|prod4|30|11|31|user9@u.ru|4
+sqlite> select * from products left outer join in_stock on (
+   ...> products.id=orders.product_id
+   ...> );
+Error: no such column: orders.product_id
+sqlite> select * from products left outer join orders on (
+   ...> products.id=orders.product_id
+   ...> );
+1|test|10|2|2|user1@u.ru|1
+1|test|10|1|12|test@test.test|1
+1|test|10|6|14|user5@u.ru|1
+2|prod2|15|3|1|user2@u.ru|2
+2|prod2|15|7|1|user6@u.ru|2
+2|prod2|15|10|9|user8@u.ru|2
+3|prod3|20|4|5|user3@u.ru|3
+3|prod3|20|8|6|user7@u.ru|3
+4|prod4|30|5|4|user4@u.ru|4
+4|prod4|30|9|7|user8@u.ru|4
+4|prod4|30|11|31|user9@u.ru|4
+sqlite> select * from products left outer join in_stock on (
+   ...> products.id=in_stock.product_id
+   ...> );
+1|test|10|1|31|1
+2|prod2|15|3|31|2
+3|prod3|20|4|31|3
+4|prod4|30|5|31|4
+sqlite> select * from products left outer join orders on (
+   ...> products.id=orders.product_id
+   ...> )
+   ...> left outer join in_stock on (
+   ...> products.id=in_stock.product_id
+   ...> );
+1|test|10|2|2|user1@u.ru|1|1|31|1
+1|test|10|1|12|test@test.test|1|1|31|1
+1|test|10|6|14|user5@u.ru|1|1|31|1
+2|prod2|15|3|1|user2@u.ru|2|3|31|2
+2|prod2|15|7|1|user6@u.ru|2|3|31|2
+2|prod2|15|10|9|user8@u.ru|2|3|31|2
+3|prod3|20|4|5|user3@u.ru|3|4|31|3
+3|prod3|20|8|6|user7@u.ru|3|4|31|3
+4|prod4|30|5|4|user4@u.ru|4|5|31|4
+4|prod4|30|9|7|user8@u.ru|4|5|31|4
+4|prod4|30|11|31|user9@u.ru|4|5|31|4
