@@ -1,0 +1,64 @@
+{% extends '_base_template.html' %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+  Hi {{ current_user.username }}!
+    <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    <a href="{{ url_for('blog.user_profile') }}">User profile page</a>
+{% else %}
+    <b>Hi where, Enjoy our blog!</b>
+    <a href="{{ url_for('auth.login') }}">Log In</a>
+    <a href="{{ url_for('auth.signup') }}">Sign Up</a>
+{% endif %}
+
+<div class="content" xmlns="http://www.w3.org/1999/html">
+
+    <h2>Welcome to the Simple blog!</h2>
+    <h3>From now our blog on the database with employing Bluepring, Flask-Login, Flask-Mail and so on.</h3>
+    <h3>Create your own post!</h3>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% from "macros/render_field.html" import render_field %}
+    {% from "macros/render_field.html" import render_post %}
+    {% if current_user.is_authenticated %}
+    <form method="POST" action="{{ url_for('blog.home') }}">
+{#        {{ form.hidden_tag() }}#}
+        <dl>
+            {% for field in form %}
+                {% if form.id != 'csrf_token' %}
+                    {{ render_field(field) }}
+                {% endif %}
+            {% endfor %}
+        </dl>
+
+        <input type="submit" value="{{ 'Submit' }}" class="btn">
+    </form>
+    {% endif %}
+    <div>
+        <dl>
+            {% for post in posts %}
+                {% if post.id != 'csrf_token' %}
+                    {{ render_post(post) }}
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                <form method="POST" action="{{ url_for('blog.delete_post') }}">
+                    <input type="hidden" value="{{ post.id }}" name = "id">
+                    <input type="submit" value="{{ 'Delete post' }}" class="btn">
+                </form>
+                {% endif %}
+                <br><br>
+            {% endfor %}
+        </dl>
+    </div>
+
+</div>
+
+{% endblock %}

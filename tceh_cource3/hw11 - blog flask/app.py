@@ -2,21 +2,26 @@
 
 from flask import Flask, request, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
+from views import blog
 import config
 
-__author__ = 'ska'
+__author__ = 'kirillsavelyev'
 
-app = Flask(__name__, template_folder='template')
-app.config.from_pyfile(config)
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 
-@app.route('/', methods=['GET', 'POST'])
-def main():
-    return 'Hello World!'
+def create_app():
+    app = Flask(__name__, template_folder='templates')
+    app.config.from_pyfile(config)
+    app.register_blueprint(blog)
+    db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
 
 
 if __name__ == '__main__':
-    from models import *
-    db.create_all()
+    app = create_app()
     app.run()
