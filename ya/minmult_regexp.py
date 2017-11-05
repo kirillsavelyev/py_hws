@@ -4,7 +4,7 @@
 которое можно составить из двух чисел этого массива.
 '''
 
-# from random import randint
+from random import randint
 from sys import maxsize
 
 
@@ -23,17 +23,17 @@ def minMult(l):
 
     return min_mult
 
-# L = [randint(-100, 100) for i in range(30)]
+L = [randint(-100, 100) for i in range(30)]
 
-# print (minmult(L))
+print (minMult(L))
 
 
 '''
-В системе авторизации есть ограничение: 
-логин должен состоять из латинских букв, цифр, точки и минуса, 
-начинаться с буквы и заканчиваться только буквой или цифрой; 
-минимальная длина логина — один символ, максимальная — 20 символов. 
-Напишите код на языке Python, проверяющий соответствие 
+В системе авторизации есть ограничение:
+логин должен состоять из латинских букв, цифр, точки и минуса,
+начинаться с буквы и заканчиваться только буквой или цифрой;
+минимальная длина логина — один символ, максимальная — 20 символов.
+Напишите код на языке Python, проверяющий соответствие
 входной строки этому правилу.
 '''
 
@@ -44,11 +44,11 @@ def lognameValidation(login):
     result = re.match(r'^([a-z]{1}|[a-z]{1}[\w.-]{0,18}\w{1})$', login)
     return '{} login name'.format('Incorrect' if result == None else 'Correct')
 
-# print(lognameValidation('s'))
-# print(lognameValidation('super-puper.druper'))
-# print(lognameValidation('super-puper.druper2'), end='\n\n')
-# print(lognameValidation('super-puper$druper2'))
-# print(lognameValidation('super-megapuper.druper3'))
-# print(lognameValidation('-megapuper.druper4'))
-# print(lognameValidation('megapuper.druper4-'))
-# print(lognameValidation(''))
+print(lognameValidation('s'))
+print(lognameValidation('super-puper.druper'))
+print(lognameValidation('super-puper.druper2'), end='\n\n')
+print(lognameValidation('super-puper$druper2'))
+print(lognameValidation('super-megapuper.druper3'))
+print(lognameValidation('-megapuper.druper4'))
+print(lognameValidation('megapuper.druper4-'))
+print(lognameValidation(''))
