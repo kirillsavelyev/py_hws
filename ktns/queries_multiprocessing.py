@@ -36,7 +36,7 @@ def main():
 
 
 def query_worker(q):
-    """ This function retrieves the request text,
+    """ This function gets the text of the request,
     makes a query on google.com and returns the parsed URL """
 
     url = 'http://google.com'
